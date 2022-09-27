@@ -162,6 +162,7 @@ public actor FramerActor<Element>: ObservableObject {
         guard !Task.isCancelled else { return }
         tape = Tape(loaded)
         self.frameRange = frameRange
+        await updateSliceIfNeed(force: true)
     }
 }
 
