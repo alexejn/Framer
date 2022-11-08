@@ -103,7 +103,7 @@ public final class Framer<Element>: ObservableObject {
         Task {  await loadLeft() }
     }
 
-    @MainActor
+//    @MainActor
     private func startRightLoadingIfNeed() {
         guard !state.isloading && !rightState.isloading else { return }
 
@@ -113,7 +113,7 @@ public final class Framer<Element>: ObservableObject {
         Task {  await loadRight() }
     }
 
-    @MainActor
+//    @MainActor
     private func loadLeft() async {
         guard let left = tape.left else { return }
 
@@ -181,7 +181,7 @@ public final class Framer<Element>: ObservableObject {
         self.frameRange = frameRange
     }
 
-    @MainActor
+//    @MainActor
     private func loadRight() async {
         guard let right = tape.right else { return }
 
@@ -201,10 +201,11 @@ public final class Framer<Element>: ObservableObject {
         }
     }
 
-    @MainActor
+//    @MainActor
     private func updateSliceIfNeed(force: Bool = false) {
         let newSlice = tape[safe: frameRange]
-        guard frameSlice.indices != newSlice.indices || force else { return }
+        print("FR \(frameRange) NS \(newSlice.startIndex)-\(newSlice.endIndex)")
+//        guard frameSlice.indices != newSlice.indices || force else { return }
         self.frameSlice = newSlice
     }
 

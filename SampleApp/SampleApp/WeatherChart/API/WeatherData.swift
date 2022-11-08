@@ -26,9 +26,10 @@ struct WeatherData: Identifiable, Equatable, Hashable {
 extension WeatherData {
     static var sample: [WeatherData] {
         let today = Date.now
-        let weekAgo = today.addingTimeInterval(-10 * TimeInterval.day)
+        let day: Double = 60 * 60 * 24
+        let weekAgo = today.addingTimeInterval(-10 * day )
         let frameRange =  weekAgo...today
-        let bins = DateBins(timeInterval: .day, range: frameRange)
+        let bins = DateBins(timeInterval: day, range: frameRange)
         let data = bins.thresholds.map { WeatherData(datetime: $0,
                                                      temp: .random(in: 0...50),
                                                      tempmax: .random(in: 25...30),

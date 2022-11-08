@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 
-public actor FramerActor<Element>: ObservableObject {
+public final class FramerActor<Element>: ObservableObject {
 
     public private(set) var frameRange: Range<Int> {
          didSet {
@@ -24,10 +24,10 @@ public actor FramerActor<Element>: ObservableObject {
         }
     }
 
-    @Published @MainActor public private(set) var frameSlice: Slice<Tape<Element>>
-    @Published @MainActor public private(set) var leftState: State = .inited
-    @Published @MainActor public private(set) var rightState: State = .inited
-    @Published @MainActor public private(set) var state: State = .inited
+    @Published public private(set) var frameSlice: Slice<Tape<Element>>
+    @Published public private(set) var leftState: State = .inited
+    @Published public private(set) var rightState: State = .inited
+    @Published public private(set) var state: State = .inited
 
     public private(set) var tape: Tape<Element>
 
@@ -46,7 +46,7 @@ public actor FramerActor<Element>: ObservableObject {
         case canceled
         case loaded
 
-        var isloading: Bool {
+        public var isloading: Bool {
             if case .loading = self { return true }
             return false
         }
@@ -60,7 +60,8 @@ public actor FramerActor<Element>: ObservableObject {
         self.delegate = delegate
     }
 
-    @MainActor @discardableResult
+   //@MainActor
+    @discardableResult
     private func doWithStateUpdate(_ task: Task<Void, Error>, stateKey: ReferenceWritableKeyPath<FramerActor<Element>, State>) async -> Bool {
         self[keyPath: stateKey] = .loading
         do {
@@ -77,20 +78,26 @@ public actor FramerActor<Element>: ObservableObject {
         }
     }
 
-    @MainActor
-    private func updateSliceIfNeed(force: Bool = false) async {
-        let newSlice = await tape[safe: frameRange]
+  // @MainActor
+    private func updateSliceIfNeed(force: Bool = false) //async
+    {
+        let newSlice =// await
+        tape[safe: frameRange]
 
         guard frameSlice.indices != newSlice.indices || force else { return }
         self.frameSlice = newSlice
     }
 
-    @MainActor
-    public func setFrameRange(_ range: Range<Int>) async {
-        let current = await frameRange
+   // @MainActor
+    public func setFrameRange(_ range: Range<Int>) //async
+    {
+        let current = //await
+        frameRange
         guard current != range else { return }
-        await set(frameRange: range)
-        await updateSliceIfNeed()
+       // await
+        set(frameRange: range)
+       // await
+        updateSliceIfNeed()
     }
 
     public func load() async {
@@ -104,7 +111,8 @@ public actor FramerActor<Element>: ObservableObject {
         self.loadTask = nil
     }
 
-    private func set(frameRange: Range<Int>) async {
+    private func set(frameRange: Range<Int>) //async
+    {
         self.frameRange = frameRange
     }
 
@@ -147,6 +155,7 @@ public actor FramerActor<Element>: ObservableObject {
         let loaded = try await delegate.loadLeft(lastLeft: left, frameLenght: frameRange.distance)
         guard !Task.isCancelled else { return }
         tape.append(atLeft: loaded)
+        updateSliceIfNeed()
     }
 
     private func loadRightAndAddToTape() async throws {
@@ -154,6 +163,7 @@ public actor FramerActor<Element>: ObservableObject {
         let loaded = try await delegate.loadRight(lastRight: right, frameLenght: frameRange.distance)
         guard !Task.isCancelled else { return }
         tape.append(atRight: loaded)
+        updateSliceIfNeed()
     }
 
     private func reloadTape() async throws {
@@ -162,7 +172,8 @@ public actor FramerActor<Element>: ObservableObject {
         guard !Task.isCancelled else { return }
         tape = Tape(loaded)
         self.frameRange = frameRange
-        await updateSliceIfNeed(force: true)
+       // await
+        updateSliceIfNeed(force: true)
     }
 }
 

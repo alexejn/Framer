@@ -13,17 +13,20 @@ struct ContentView: View {
         NavigationStack {
             VStack {
                 Section {
-                    WeatherChart(model: WeatherChartModel())
+                    WeatherView(vm: WeatherViewModel())
+                    .padding(.top, 20)
                 }
                 Spacer()
-            } 
+            }
+        }.onAppear {  
+
         }
         
     }
 }
-
+ 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+       ContentView()
     }
 }

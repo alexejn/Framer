@@ -79,7 +79,9 @@ extension ClosedRange where Bound == Double {
     var distance: Double { upperBound - lowerBound }
     
     var int: ClosedRange<Int> { Int(lowerBound)...Int(upperBound) }
-    
+
+    var intWideRounding: ClosedRange<Int> { Int(floor(lowerBound))...Int(ceil(upperBound)) }
+
     func offset(_ val: Double) -> Self {
         lowerBound+val...upperBound+val
     }
